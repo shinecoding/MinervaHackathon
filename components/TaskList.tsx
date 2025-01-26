@@ -5,6 +5,7 @@ import { FlashList } from "@shopify/flash-list";
 // import { AuthContext } from "@/store/auth-context";
 // import MenuButton from '@/components/ui/MenuButton';
 import { useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 
 
 interface TaskListProps {
@@ -17,16 +18,15 @@ const TaskList: React.FC<TaskListProps> = ({ data }) => {
   // authCtx.isAuthenticated ? setIsAuthenticated(true) : setIsAuthenticated(false);
   const router = useRouter();
 
-  function selectQuestHandler(id: number) {
-    if (isAuthenticated) {
-      // router.push(`/detail?questId=${id}`);
-    } else {
-      // router.push("/auth");
-    }
-  }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <LinearGradient
+      colors={['#f4cccc', '#E7DAF5', '#d9f0fd']} // 색상 배열
+      style={styles.safeView}
+      start={{ x: 0, y: 0 }} // 사선 시작 (좌측 상단)
+        end={{ x: 1, y: 1 }} // 사선 끝 (우측 하단)
+    >
+    {/* <SafeAreaView style={styles.safeView}> */}
       <View style={styles.listContainer}>
         <FlashList
           contentContainerStyle={styles.list}
@@ -34,19 +34,26 @@ const TaskList: React.FC<TaskListProps> = ({ data }) => {
           data={data}
           // keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <TaskItem data={item} onSelect={selectQuestHandler} />
+            <TaskItem data={item} />
           )}
           estimatedItemSize={200}
         />
       </View>
-    </SafeAreaView>
+    {/* </SafeAreaView> */}
+      </LinearGradient>
   );
 }
 
 export default TaskList;
 
 const styles = StyleSheet.create({
-
+  safeView: {
+    flex: 1,
+    // padding: 20,
+    // backgroundColor: "#E7DAF5",
+    // justifyContent: "center",
+    // alignItems: "center",
+  },
   listContainer: {
     flex: 1
   },

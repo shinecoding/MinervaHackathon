@@ -14,9 +14,11 @@ export default Label
 
 const styles = StyleSheet.create({
     label: {
-        color: "red",
+        color: "black",
         marginBottom: 4,
         marginTop: 8,
+        fontSize: 16,
+        fontWeight: 'bold',
         // letterSpacing: 1.5,
         // fontFamily: 'logo-font',
     },

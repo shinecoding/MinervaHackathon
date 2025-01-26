@@ -8,6 +8,7 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "backgroundColor": "#E7DAF5",
     "ios": {
       "supportsTablet": true
     },
@@ -32,7 +33,21 @@
           "resizeMode": "contain",
           "backgroundColor": "#E7DAF5"
         }
-      ]
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow SnapQuest to access your photos"
+        }
+      ],
+      "expo-font",
+      "expo-router"
     ],
     "experiments": {
       "typedRoutes": true

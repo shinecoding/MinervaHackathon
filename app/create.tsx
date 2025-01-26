@@ -1,4 +1,4 @@
-import { ImageBackground, StyleSheet, Text, View, Alert, SafeAreaView, Pressable, ScrollView } from 'react-native'
+import { ImageBackground, StyleSheet, Text, View, Alert, SafeAreaView, Pressable, ScrollView, TouchableOpacity, Switch, Image } from 'react-native'
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 // import Label from '@/components/ui/Label';
 // import HorizontalScroll from '@/components/ui/HorizontalScroll';
@@ -21,6 +21,7 @@ import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import { useRoute } from '@react-navigation/native';
 import { IconSymbol } from '@/components/ui/IconSymbol.ios';
+import { LinearGradient } from 'expo-linear-gradient';
 // const route = useRoute();
 
 const CreateScreen = () => {
@@ -31,6 +32,8 @@ const CreateScreen = () => {
   const [titleIsInvalid, setTitleIsInvalid] = useState(false);
   const [AdditionalNotesIsInvalid, setAdditionalNotesIsInvalid] = useState(false);
   const [privatePasscodeIsInvalid, setPrivatePasscodeIsInvalid] = useState(false);
+  const [selectedRating, setSelectedRating] = useState(0);
+  const [isCollaborative, setIsCollaborative] = useState(false);
   const router = useRouter();
 
   function updateInputValueHandler(inputType: string, enteredValue: string) {
@@ -111,80 +114,86 @@ const CreateScreen = () => {
         console.log("퀘스트 생성 직 후 에러")
         console.log(error)
       }
-
-      // router.push(`/detail/${id}`);
     }
   }
 
 
+  function renderStars() {
+    return Array.from({ length: 5 }, (_, index) => {
+      const starIndex = index + 1;
+      const isFilled = starIndex <= selectedRating;
 
+      return (
+        <TouchableOpacity
+          key={index}
+          onPress={() => setSelectedRating(starIndex)} // 클릭 시 선택된 별점 업데이트
+          style={styles.star}
+        >
+          <Text style={{ fontSize: 32, color: isFilled ? 'purple' : '#D3D3D3' }}>★</Text>
+        </TouchableOpacity>
+      );
+    });
+  }
 
-  let passcode = null
-  // if (enteredStatus && enteredStatus == 'Private') {
-  //   passcode = (
-  //     <Input
-  //       label="Private Passcode*"
-  //       onUpdateValue={updateInputValueHandler.bind(this, 'privatePasscode')}
-  //       value={enteredPrivatePasscode}
-  //       placeholder="ex) 1234"
-  //       keyboardType="default"
-  //       secure={false}
-  //       isInvalid={privatePasscodeIsInvalid}
-  //       multiline={false}
-  //       numberOflines={1}
-  //     />
-  //   )
-  // }
 
   return (
     <>
-      <SafeAreaView style={styles.safeView}>
-        <ScrollView style={styles.container}>
+      <LinearGradient
+        colors={['#f4cccc', '#E7DAF5', '#d9f0fd']} // 색상 배열
+        style={styles.safeView}
+        start={{ x: 0, y: 0 }} // 사선 시작 (좌측 상단)
+        end={{ x: 1, y: 1 }} // 사선 끝 (우측 하단)
+      >
+        <View style={styles.container}>
 
           {/* <Label>Title*</Label> */}
           <Input label="Title*"
-        onUpdateValue={updateInputValueHandler.bind(this, 'title')}
-        value={enteredTitle}
-        placeholder="Add something super important here"
-        keyboardType="default"
-        secure={false}
-        isInvalid={privatePasscodeIsInvalid}
-        multiline={false}
-        numberOflines={1}
-        />
+            onUpdateValue={updateInputValueHandler.bind(this, 'title')}
+            value={enteredTitle}
+            placeholder="Add something super important here"
+            keyboardType="default"
+            secure={false}
+            isInvalid={privatePasscodeIsInvalid}
+            multiline={false}
+            numberOflines={1}
+          />
 
           <Label>Collaborative</Label>
-          
-          {/* <View style={styles.snapExampleContainer}>
-            <View style={styles.snapExampleText}>
-              <DescriptionText>*Upload the Image</DescriptionText>
-              <DescriptionText>that best portrays</DescriptionText>
-              <DescriptionText>the quest</DescriptionText>
-            </View>
-          </View> */}
+
+          <View style={styles.collaborativeContainer}>
+            <Switch
+              value={isCollaborative}
+              onValueChange={setIsCollaborative}
+              trackColor={{ false: "#D3D3D3", true: "purple" }}
+              thumbColor="white"
+            />
+            {isCollaborative && (
+              <ScrollView horizontal style={styles.imageScrollContainer}>
+                {['friend1.jpg', 'friend2.jpg', 'friend3.jpg', 'friend4.jpg'].map((image, index) => (
+                  <Image
+                    key={index}
+                    source={{ uri: image }} // Replace with your local image paths or proper URIs
+                    style={styles.image}
+                  />
+                ))}
+              </ScrollView>
+            )}
+          </View>
+
 
           <Label>Difficulty Rating</Label>
-          <View style={styles.starContainer}>
-      {Array.from({ length: 5 }, (_, index) => (
-        <IconSymbol
-          key={index}
-          name="star"
-          size={24}
-          color={index < parseInt(enteredDifficulty) ? 'gold' : 'gray'} // 'gold' for filled, 'gray' for unfilled
-        />
-      ))}
-    </View>
-          
-          <Input label="Additional Rates*"
-        onUpdateValue={updateInputValueHandler.bind(this, 'title')}
-        value={enteredTitle}
-        placeholder="Tell us everything"
-        keyboardType="default"
-        secure={false}
-        isInvalid={AdditionalNotesIsInvalid}
-        multiline={true}
-        numberOflines={5}
-        />
+          <View style={styles.starContainer}>{renderStars()}</View>
+
+          <Input label="Additional Notes*"
+            onUpdateValue={updateInputValueHandler.bind(this, 'title')}
+            value={enteredTitle}
+            placeholder="Tell us everything"
+            keyboardType="default"
+            secure={false}
+            isInvalid={AdditionalNotesIsInvalid}
+            multiline={true}
+            numberOflines={5}
+          />
 
           <View style={styles.buttonContainer}>
             {/* <View style={styles.goBack}>
@@ -194,9 +203,9 @@ const CreateScreen = () => {
               <Button onPress={submitHandler} disabled={false} display={true}>Submit</Button>
             </View>
           </View>
-        </ScrollView>
-      </SafeAreaView>
-      {/* <ImageBottomSheet page="snapExample" ref={bottomSheetModalRef} /> */}
+        </View>
+
+      </LinearGradient>
     </>
   )
 }
@@ -206,11 +215,15 @@ export default CreateScreen
 const styles = StyleSheet.create({
 
   safeView: {
-    flex: 1
+    flex: 1,
+    // padding: 20,
   },
   container: {
+    flex: 1,
+    margin: 20,
+    borderRadius: 20,
     padding: 20,
-    flex: 5
+    backgroundColor: "white",
   },
   snapExampleContainer: {
     flexDirection: 'row'
@@ -272,6 +285,18 @@ const styles = StyleSheet.create({
   starContainer: {
     flexDirection: 'row',
     marginVertical: 10,
-  }
-
+  },
+  star: {
+    marginHorizontal: 5,
+  },
+  collaborativeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginVertical: 10,
+  },
+  imageScrollContainer: {
+    flexDirection: 'row',
+    marginVertical: 10,
+  },
 })
