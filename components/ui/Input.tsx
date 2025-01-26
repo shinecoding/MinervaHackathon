@@ -45,6 +45,8 @@ const styles = StyleSheet.create({
   label: {
     color: "black",
     marginBottom: 4,
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   labelInvalid: {
     color: "red",
